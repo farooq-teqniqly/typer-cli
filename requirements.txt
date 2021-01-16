@@ -1,0 +1,5 @@
+black==20.8b1
+colorama==0.4.4
+python-dotenv==0.15.0
+typer==0.3.2
+keyring==21.8.0
