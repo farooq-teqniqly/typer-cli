@@ -1,24 +1,16 @@
-import codecs
-import jsonpickle
+from typer import Typer
 
-import keyring
-from typer import Typer, secho
-
-from config_helpers import save_config
-from credentials_helper import set_password
-from tcli import CliConfig
+from tcli.commands.configure.credentials.credentials import CredentialsApp
+from tcli.typer_app import TyperApp
 
 
-def create_app(cli_config: CliConfig, *args, **kwargs):
-    app = Typer(help="Configure the CLI.")
+class ConfigureApp(TyperApp):
 
-    @app.command()
-    def credentials(user_name: str, password: str):
-        """Configure the credentials the CLI commands run under."""
-        set_password(user_name, password)
-        cli_config.username = user_name
-        save_config(cli_config)
+    def on_create_app(self, app: Typer, *args, **kwargs) -> Typer:
+        app.add_typer(
+            CredentialsApp(self.config).create_app(
+                help="Manage CLI credentials."),
+            name="credentials"
+        )
 
-        secho(f"Username: {cli_config.username}", fg="green")
-
-    return app
+        return app
